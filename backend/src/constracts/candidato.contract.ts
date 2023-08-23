@@ -1,8 +1,7 @@
-import dotenv from 'dotenv';
 import { ethers } from 'ethers';
 import { Elecciones__factory } from '../../../blockchain/typechain/factories/Elecciones__factory';
 import { BlockchainUrlsEnum } from './urls';
-
+import dotenv from 'dotenv';
 dotenv.config();
 
 export const getCandidatoContract = (

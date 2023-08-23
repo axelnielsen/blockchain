@@ -2,35 +2,16 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
 import { getMessengerContract } from './constracts/messenger.contract';
+import { getCandidatoContract } from './constracts/candidato.contract';  // Importa la función para obtener el contrato de Elecciones
 
 dotenv.config();
 
-//let message='Welcome to the Web3 🚀'
 const app: Express = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 20001;  // Agregado un valor por defecto por si no se define PORT en .env
 
-app.options('*', cors());
+app.use(cors());  // Usar cors de esta manera es más simple y efectivo que con app.options y app.all
 
-app.all('/*', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-  next();
-});
-/*
-app.get('/messenger', async (req: Request, res: Response) => {
-  res.json({
-    message
-  });
-});
-
-app.put('/messenger', async (req: Request, res: Response) => {
-  message=req.query.message! as string;
-  res.json({
-    message
-  });
-});
-*/
-
+// Endpoints para Messenger
 app.get('/messenger', async (req: Request, res: Response) => {
   const contract = getMessengerContract();
   const response = await contract.getMessage();
@@ -46,6 +27,31 @@ app.put('/messenger', async (req: Request, res: Response) => {
   res.json({
     message: response
   });
+});
+
+// Endpoints para Elecciones
+app.get('/elecciones/candidatos', async (req: Request, res: Response) => {
+  const contract = getCandidatoContract();
+  const candidatos = await contract.getNombre(1);  
+  res.json(candidatos);
+});
+
+app.post('/elecciones/agregarCandidato', async (req: Request, res: Response) => {
+  const nombre = req.query.nombre;
+  const contract = getCandidatoContract();
+  const tx = await contract.agregarCandidato(nombre);
+  const receipt = await tx.wait();  // Espera a que la transacción se confirme
+  if (receipt.status === 1) {
+    res.json({
+      success: true,
+      message: 'Candidato agregado con éxito'
+    });
+  } else {
+    res.status(400).json({
+      success: false,
+      message: 'Hubo un error al agregar el candidato'
+    });
+  }
 });
 
 app.listen(port, () => {

@@ -16,30 +16,12 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const messenger_contract_1 = require("./constracts/messenger.contract");
+const candidato_contract_1 = require("./constracts/candidato.contract"); // Importa la función para obtener el contrato de Elecciones
 dotenv_1.default.config();
-//let message='Welcome to the Web3 🚀'
 const app = (0, express_1.default)();
-const port = process.env.PORT;
-app.options('*', (0, cors_1.default)());
-app.all('/*', function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-    next();
-});
-/*
-app.get('/messenger', async (req: Request, res: Response) => {
-  res.json({
-    message
-  });
-});
-
-app.put('/messenger', async (req: Request, res: Response) => {
-  message=req.query.message! as string;
-  res.json({
-    message
-  });
-});
-*/
+const port = process.env.PORT || 20001; // Agregado un valor por defecto por si no se define PORT en .env
+app.use((0, cors_1.default)()); // Usar cors de esta manera es más simple y efectivo que con app.options y app.all
+// Endpoints para Messenger
 app.get('/messenger', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const contract = (0, messenger_contract_1.getMessengerContract)();
     const response = yield contract.getMessage();
@@ -54,6 +36,30 @@ app.put('/messenger', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     res.json({
         message: response
     });
+}));
+// Endpoints para Elecciones
+app.get('/elecciones/candidatos', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const contract = (0, candidato_contract_1.getCandidatoContract)();
+    const candidatos = yield contract.getNombre(1);
+    res.json(candidatos);
+}));
+app.post('/elecciones/agregarCandidato', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const nombre = req.query.nombre;
+    const contract = (0, candidato_contract_1.getCandidatoContract)();
+    const tx = yield contract.agregarCandidato(nombre);
+    const receipt = yield tx.wait(); // Espera a que la transacción se confirme
+    if (receipt.status === 1) {
+        res.json({
+            success: true,
+            message: 'Candidato agregado con éxito'
+        });
+    }
+    else {
+        res.status(400).json({
+            success: false,
+            message: 'Hubo un error al agregar el candidato'
+        });
+    }
 }));
 app.listen(port, () => {
     console.log(`⚡️[server]: DApp API Server is running at http://localhost:${port}`);
