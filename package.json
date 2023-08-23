@@ -1,0 +1,19 @@
+{
+  "name": "web3-app-boilerplate",
+  "version": "1.0.0",
+  "author": "Carlos Cosming",
+  "description": "A web3 boilerplate compatible with any EVM blockchain",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {},
+  "keywords": [],
+  "devDependencies": {
+    "hardhat": "^2.17.1"
+  },
+  "dependencies": {
+    "h": "^1.0.0"
+  }
+}
