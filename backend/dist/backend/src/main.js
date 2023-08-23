@@ -40,8 +40,14 @@ app.put('/messenger', (req, res) => __awaiter(void 0, void 0, void 0, function* 
 // Endpoints para Elecciones
 app.get('/elecciones/candidatos', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const contract = (0, candidato_contract_1.getCandidatoContract)();
-    const candidatos = yield contract.getNombre(1);
-    res.json(candidatos);
+    const totalCandidatosBN = yield contract.totalCandidatos();
+    const totalCandidatos = totalCandidatosBN;
+    const candidatosList = [];
+    for (let i = 0; i < totalCandidatos; i++) {
+        const nombre = yield contract.getNombre(i);
+        candidatosList.push(nombre); // Agrega cada nombre al arreglo
+    }
+    res.json(candidatosList);
 }));
 app.post('/elecciones/agregarCandidato', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const nombre = req.query.nombre;

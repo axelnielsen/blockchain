@@ -32,8 +32,14 @@ app.put('/messenger', async (req: Request, res: Response) => {
 // Endpoints para Elecciones
 app.get('/elecciones/candidatos', async (req: Request, res: Response) => {
   const contract = getCandidatoContract();
-  const candidatos = await contract.getNombre(1);  
-  res.json(candidatos);
+  const totalCandidatosBN = await contract.totalCandidatos();
+  const totalCandidatos = totalCandidatosBN;
+  const candidatosList = []; 
+  for (let i = 0; i < totalCandidatos; i++) {
+    const nombre = await contract.getNombre(i);
+    candidatosList.push(nombre);  // Agrega cada nombre al arreglo
+  }
+  res.json(candidatosList);
 });
 
 app.post('/elecciones/agregarCandidato', async (req: Request, res: Response) => {
