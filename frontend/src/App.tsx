@@ -24,21 +24,14 @@ function App() {
 
   return (
     <div>
-      <h1>{message}</h1>
-      {message && <ChangeMessengerMessage currentMessage={message} />}
-      
+    
       {/* Renderiza la lista de candidatos */}
-      <h2>Candidatos</h2>
-      <ul>
-        {candidatos.map((candidato, index) => (
-          <li key={index}>{candidato}</li>
-        ))}
-      </ul>
+
 
       {/* Incluye el componente para agregar candidatos */}
       <AgregarCandidato />
     </div>
   );
-}
+} 
 
 export default App;
