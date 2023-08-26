@@ -1,7 +1,6 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
-import { getMessengerContract } from './constracts/messenger.contract';
 import { getCandidatoContract } from './constracts/candidato.contract';  // Importa la función para obtener el contrato de Elecciones
 
 dotenv.config();
@@ -11,23 +10,7 @@ const port = process.env.PORT || 20001;  // Agregado un valor por defecto por si
 
 app.use(cors());  // Usar cors de esta manera es más simple y efectivo que con app.options y app.all
 
-// Endpoints para Messenger
-app.get('/messenger', async (req: Request, res: Response) => {
-  const contract = getMessengerContract();
-  const response = await contract.getMessage();
-  res.json({
-    message: response
-  });
-});
 
-app.put('/messenger', async (req: Request, res: Response) => {
-  const message = req.query.message;
-  const contract = getMessengerContract();
-  const response = await contract.setMessage(message);
-  res.json({
-    message: response
-  });
-});
 
 // Endpoints para Elecciones
 app.get('/elecciones/candidatos', async (req: Request, res: Response) => {
@@ -59,6 +42,20 @@ app.post('/elecciones/agregarCandidato', async (req: Request, res: Response) => 
     });
   }
 });
+
+app.post('/elecciones/votarPorCandidato', async (req: Request, res: Response) => {
+
+  const contract = getCandidatoContract();
+  ///const idCandidato = req.query.id;
+  const { idCandidato } = req.body;  
+
+  const tx = await contract.votarPorCandidato(Number(idCandidato));
+
+
+   await tx.wait();
+
+});
+
 
 app.listen(port, () => {
   console.log(`⚡️[server]: DApp API Server is running at http://localhost:${port}`);

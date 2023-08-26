@@ -25,7 +25,13 @@ export const getVotos = async (contractInstance: ethers.Contract) => {
   return await contractInstance.getVotos();
 };
 
-export const votar = async (contractInstance: ethers.Contract) => {
-  const tx = await contractInstance.votar();
-  return await tx.wait();
+export const votarPorCandidato = async (idCandidato: number) => {
+  try {
+    const contract = getCandidatoContract();
+    const tx = await contract.votar(idCandidato);
+    return await tx.wait();
+  } catch (error) {
+    console.error('Error al votar:', error);
+    throw error;
+  }
 };

@@ -12,29 +12,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.votarPorCandidato = exports.getVotos = exports.getNombre = exports.getCandidatoContract = void 0;
+exports.votar = exports.getVotos = exports.getNombre = void 0;
+// elecciones.js
 const ethers_1 = require("ethers");
 const Elecciones__factory_1 = require("../../../blockchain/typechain/factories/Elecciones__factory");
 const urls_1 = require("./urls");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const getCandidatoContract = (url = urls_1.BlockchainUrlsEnum.POLYGON_MUMBAI) => {
-    const provider = new ethers_1.ethers.JsonRpcProvider(url);
+// Esta función devuelve la instancia del contrato Elecciones.
+const getEleccionesContract = () => {
+    const provider = new ethers_1.ethers.JsonRpcProvider(urls_1.BlockchainUrlsEnum.POLYGON_MUMBAI);
     const wallet = new ethers_1.ethers.Wallet(process.env.PRIVATE_KEY, provider);
     return new ethers_1.ethers.Contract(process.env.ELECCIONES_CONTRACT_ADDRESS, Elecciones__factory_1.Elecciones__factory.abi, wallet);
 };
-exports.getCandidatoContract = getCandidatoContract;
-const getNombre = (contractInstance) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield contractInstance.getNombre();
+// Si necesitas una función similar para otro contrato, por ejemplo, Candidato, puedes agregarla aquí:
+/*
+const getCandidatoContract = () => {
+  const provider = new ethers.JsonRpcProvider(BlockchainUrlsEnum.POLYGON_MUMBAI);
+  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+  return new ethers.Contract(
+    process.env.CANDIDATO_CONTRACT_ADDRESS!,
+    Candidato__factory.abi,
+    wallet
+  );
+};
+*/
+const getNombre = () => __awaiter(void 0, void 0, void 0, function* () {
+    const contract = getEleccionesContract();
+    return yield contract.getNombre();
 });
 exports.getNombre = getNombre;
-const getVotos = (contractInstance) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield contractInstance.getVotos();
+const getVotos = () => __awaiter(void 0, void 0, void 0, function* () {
+    const contract = getEleccionesContract();
+    return yield contract.getVotos();
 });
 exports.getVotos = getVotos;
-const votarPorCandidato = (idCandidato) => __awaiter(void 0, void 0, void 0, function* () {
+const votar = (idCandidato) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const contract = (0, exports.getCandidatoContract)();
+        const contract = getEleccionesContract();
         const tx = yield contract.votar(idCandidato);
         return yield tx.wait();
     }
@@ -43,4 +58,4 @@ const votarPorCandidato = (idCandidato) => __awaiter(void 0, void 0, void 0, fun
         throw error;
     }
 });
-exports.votarPorCandidato = votarPorCandidato;
+exports.votar = votar;

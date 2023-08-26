@@ -12,3 +12,10 @@ export const agregarCandidato = async (nombre: string) =>
     method: 'POST',
     headers
   }).then((response) => response.json());
+
+// Función para votar por un candidato
+export const votarPorCandidato = async (idCandidato: number) => 
+  await fetch(`http://localhost:20001/elecciones/votarPorCandidato/?idCandidato=${idCandidato}`, {
+    method: 'POST',
+    headers
+  }).then((response) => response.json());
