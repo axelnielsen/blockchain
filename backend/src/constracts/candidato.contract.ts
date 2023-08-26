@@ -16,7 +16,6 @@ export const getCandidatoContract = (
   );
 };
 
-// Suponiendo que quieras agregar funciones para interactuar con los métodos específicos del contrato "Candidato":
 
 export const getNombre = async (contractInstance: ethers.Contract) => {
   return await contractInstance.getNombre();

@@ -14,13 +14,12 @@ async function main() {
   console.log("Candidato 'Gonzalo Arce' agregado.");
 */
   // Vota por el candidato con ID 0
-  const votarTx = await elecciones.votar(1);
+  const votarTx = await elecciones.votar(4);
   await votarTx.wait();
-  console.log("Votado por el candidato con ID 1.");
+  console.log("Votado por el candidato con ID 4.");
 
-  // Obtiene el nombre y los votos del candidato con ID 0
-  const nombre = await elecciones.getNombre(1);
-  const votos = await elecciones.getVotos(1);
+  const nombre = await elecciones.getNombre(4);
+  const votos = await elecciones.getVotos(4);
   console.log(`Candidato: ${nombre}, Votos: ${votos}`);
 }
 

@@ -1,3 +1,6 @@
-# 🚀 Web 3 App Boilerplate for EVM Blockchains
+# Sistema votaciones 
 
-by Carlos Cosming
+Integrantes:
+Gonzalo Arce
+Diego Molina
+Axel Nielsen

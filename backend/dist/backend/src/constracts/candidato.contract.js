@@ -24,7 +24,6 @@ const getCandidatoContract = (url = urls_1.BlockchainUrlsEnum.POLYGON_MUMBAI) =>
     return new ethers_1.ethers.Contract(process.env.ELECCIONES_CONTRACT_ADDRESS, Elecciones__factory_1.Elecciones__factory.abi, wallet);
 };
 exports.getCandidatoContract = getCandidatoContract;
-// Suponiendo que quieras agregar funciones para interactuar con los métodos específicos del contrato "Candidato":
 const getNombre = (contractInstance) => __awaiter(void 0, void 0, void 0, function* () {
     return yield contractInstance.getNombre();
 });
