@@ -5,4 +5,4 @@ Gonzalo Arce,
 Diego Molina,
 Axel Nielsen
 
-![Arquitectura sistema votaciones](./images/Sistema elecciones Ethereum.jpg)
+![Arquitectura sistema votaciones](images/Sistema elecciones Ethereum.jpg)
