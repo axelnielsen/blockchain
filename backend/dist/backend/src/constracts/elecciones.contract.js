@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.votar = exports.getVotos = exports.getNombre = void 0;
+exports.votar = exports.getVotos = exports.getNombre = exports.getEleccionesContract = void 0;
 // elecciones.js
 const ethers_1 = require("ethers");
 const Elecciones__factory_1 = require("../../../blockchain/typechain/factories/Elecciones__factory");
@@ -25,6 +25,7 @@ const getEleccionesContract = () => {
     const wallet = new ethers_1.ethers.Wallet(process.env.PRIVATE_KEY, provider);
     return new ethers_1.ethers.Contract(process.env.ELECCIONES_CONTRACT_ADDRESS, Elecciones__factory_1.Elecciones__factory.abi, wallet);
 };
+exports.getEleccionesContract = getEleccionesContract;
 // Si necesitas una función similar para otro contrato, por ejemplo, Candidato, puedes agregarla aquí:
 /*
 const getCandidatoContract = () => {
@@ -38,24 +39,20 @@ const getCandidatoContract = () => {
 };
 */
 const getNombre = () => __awaiter(void 0, void 0, void 0, function* () {
-    const contract = getEleccionesContract();
+    const contract = (0, exports.getEleccionesContract)();
     return yield contract.getNombre();
 });
 exports.getNombre = getNombre;
 const getVotos = () => __awaiter(void 0, void 0, void 0, function* () {
-    const contract = getEleccionesContract();
+    const contract = (0, exports.getEleccionesContract)();
     return yield contract.getVotos();
 });
 exports.getVotos = getVotos;
 const votar = (idCandidato) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const contract = getEleccionesContract();
-        const tx = yield contract.votar(idCandidato);
-        return yield tx.wait();
-    }
-    catch (error) {
-        console.error('Error al votar:', error);
-        throw error;
-    }
+    console.log("Va a votar en contract");
+    const contract = (0, exports.getEleccionesContract)();
+    console.log("Va a votar en contract");
+    //const tx = await contract.votar(idCandidato);
+    return yield contract.votar(idCandidato);
 });
 exports.votar = votar;

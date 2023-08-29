@@ -28,6 +28,7 @@ export const VotarPorCandidato = () => {
     }
     alert(`Has votado por los candidatos seleccionados.`);
   };
+  
 
   return (
     <div

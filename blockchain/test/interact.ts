@@ -7,20 +7,21 @@ async function main() {
   // Obtén el contrato
   const Elecciones = await ethers.getContractFactory("Elecciones");
   const elecciones = Elecciones.attach(contractAddress);
-/*
+/* 
   // Agrega un candidato
-  const agregarCandidatoTx = await elecciones.agregarCandidato("Gonzalo Arce ");
+  const agregarCandidatoTx = await elecciones.agregarCandidato("Candidato 9");
   await agregarCandidatoTx.wait();
   console.log("Candidato 'Gonzalo Arce' agregado.");
 */
   // Vota por el candidato con ID 0
-  const votarTx = await elecciones.votar(4);
+  const votarTx = await elecciones.votar(5);
   await votarTx.wait();
-  console.log("Votado por el candidato con ID 4.");
+  console.log("Votado por el candidato con ID 5.");
 
-  const nombre = await elecciones.getNombre(4);
-  const votos = await elecciones.getVotos(4);
+  const nombre = await elecciones.getNombre(5);
+  const votos = await elecciones.getVotos(5);
   console.log(`Candidato: ${nombre}, Votos: ${votos}`);
+  
 }
 
 // Ejecuta el script

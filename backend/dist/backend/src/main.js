@@ -16,6 +16,7 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const candidato_contract_1 = require("./constracts/candidato.contract"); // Importa la función para obtener el contrato de Elecciones
+const elecciones_contract_1 = require("./constracts/elecciones.contract");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 20001; // Agregado un valor por defecto por si no se define PORT en .env
@@ -51,11 +52,35 @@ app.post('/elecciones/agregarCandidato', (req, res) => __awaiter(void 0, void 0,
     }
 }));
 app.post('/elecciones/votarPorCandidato', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const contract = (0, candidato_contract_1.getCandidatoContract)();
-    ///const idCandidato = req.query.id;
-    const { idCandidato } = req.body;
-    const tx = yield contract.votarPorCandidato(Number(idCandidato));
-    yield tx.wait();
+    try {
+        const contract = (0, elecciones_contract_1.getEleccionesContract)(); // Asegúrate de que tienes una función llamada getEleccionesContract
+        const idCandidatoString = req.query.idCandidato;
+        if (typeof idCandidatoString !== 'string') {
+            console.log("El ID del candidato no se proporcionó correctamente.");
+            return;
+        }
+        const idCandidatoNumber = parseInt(idCandidatoString, 10);
+        if (isNaN(idCandidatoNumber)) {
+            console.error("El ID del candidato no es un número válido.");
+            res.status(400).send("ID del candidato no válido");
+            return;
+        }
+        try {
+            console.log("Va a votar en backend: " + idCandidatoNumber);
+            console.log("ID del candidato como cadena:", idCandidatoString);
+            console.log("ID del candidato como número:", idCandidatoNumber);
+            yield contract.votar(Number(6));
+        }
+        catch (error) {
+            console.log("Error al votar");
+        }
+        console.log("ya votó");
+        res.status(200).send('Voto registrado con éxito');
+    }
+    catch (error) {
+        console.error('Error al votar:', error);
+        res.status(500).send('Hubo un error al procesar el voto.');
+    }
 }));
 app.listen(port, () => {
     console.log(`⚡️[server]: DApp API Server is running at http://localhost:${port}`);

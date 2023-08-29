@@ -1,5 +1,6 @@
 import { headers } from './headers';
 
+
 // Función para obtener la lista de candidatos
 export const getCandidatos = async () =>
   await fetch('http://localhost:20001/elecciones/candidatos', { method: 'GET', headers }).then((response) =>

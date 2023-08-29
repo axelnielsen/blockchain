@@ -1,52 +1,56 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { AgregarCandidato } from './components/newCandidate';
-import { AgregarVotante } from './components/agregarVotante'; 
-import { getCandidatos, votarPorCandidato } from './fetchers/elecciones'; // Importa votarPorCandidato
-import { getVotantes } from './fetchers/votantes';
+import { getCandidatos, votarPorCandidato } from './fetchers/elecciones';
 
 function App() {
   const [candidatos, setCandidatos] = useState<string[]>([]);
-  const [votantes, setVotantes] = useState<string[]>([]);
-  const [selectedCandidato, setSelectedCandidato] = useState<string>('');
+  const [selectedCandidatoId, setSelectedCandidatoId] = useState<number | null>(null);
+  const [showComponent, setShowComponent] = useState<string | null>(null);
 
   const getApiData = async () => {
     const candidatosList = await getCandidatos();
-    const votantesList = await getVotantes();
-
     setCandidatos(candidatosList);
-    setVotantes(votantesList);
   };
 
   const handleVotar = async () => {
-    if (!selectedCandidato || selectedCandidato === "") {
+    if (selectedCandidatoId === null) {
       alert('Por favor, selecciona un candidato antes de votar.');
       return;
     }
-  
-    await votarPorCandidato(Number(selectedCandidato));
+    await votarPorCandidato(selectedCandidatoId);
     alert('Voto registrado!');
-    getApiData(); // Actualizar la lista de candidatos y votantes después de votar
+    getApiData();
   };
+
   useEffect(() => {
     getApiData();
   }, []);
 
   return (
     <div>
-      <AgregarCandidato />
+      <button onClick={() => setShowComponent('AgregarCandidato')}>Agregar Candidato</button>
+      <button onClick={() => setShowComponent('Votar')}>Votar por Candidato</button>
 
-      <h2>Votar por un Candidato</h2>
-      <select value={selectedCandidato} onChange={(e) => setSelectedCandidato(e.target.value)}>
-        {candidatos.map((candidato, index) => (
-          <option key={index} value={candidato}>
-            {candidato}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleVotar}>Votar</button>
+      {showComponent === 'AgregarCandidato' && <AgregarCandidato />}
 
-
+      {showComponent === 'Votar' && (
+        <>
+          <h2>Votar por un Candidato</h2>
+          <select 
+            value={selectedCandidatoId || ''} 
+            onChange={(e) => setSelectedCandidatoId(Number(e.target.value))}
+          >
+            <option value="" disabled>Seleccione un candidato</option>
+            {candidatos.map((candidato, index) => (
+              <option key={index} value={index}>
+                {candidato}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleVotar}>Votar</button>
+        </>
+      )}
     </div>
   );
 }

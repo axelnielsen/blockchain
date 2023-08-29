@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.votarPorCandidato = exports.getVotos = exports.getNombre = exports.getCandidatoContract = void 0;
+exports.votar = exports.getVotos = exports.getNombre = exports.getCandidatoContract = void 0;
 const ethers_1 = require("ethers");
 const Elecciones__factory_1 = require("../../../blockchain/typechain/factories/Elecciones__factory");
 const urls_1 = require("./urls");
@@ -32,15 +32,17 @@ const getVotos = (contractInstance) => __awaiter(void 0, void 0, void 0, functio
     return yield contractInstance.getVotos();
 });
 exports.getVotos = getVotos;
-const votarPorCandidato = (idCandidato) => __awaiter(void 0, void 0, void 0, function* () {
+const votar = (idCandidato) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("ahora viene getCandidatoContract:");
         const contract = (0, exports.getCandidatoContract)();
+        console.log("En contrato:" + idCandidato);
         const tx = yield contract.votar(idCandidato);
         return yield tx.wait();
     }
     catch (error) {
-        console.error('Error al votar:', error);
+        console.log('Error al votar:', error);
         throw error;
     }
 });
-exports.votarPorCandidato = votarPorCandidato;
+exports.votar = votar;

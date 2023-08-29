@@ -1,13 +1,14 @@
 // elecciones.js
-import { ethers } from 'ethers';
+import { ethers, Network } from 'ethers';
 import { Elecciones__factory } from '../../../blockchain/typechain/factories/Elecciones__factory';
 import { BlockchainUrlsEnum } from './urls';
 import dotenv from 'dotenv';
 
+
 dotenv.config();
 
 // Esta función devuelve la instancia del contrato Elecciones.
-const getEleccionesContract = () => {
+export const getEleccionesContract = () => {
   const provider = new ethers.JsonRpcProvider(BlockchainUrlsEnum.POLYGON_MUMBAI);
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
   return new ethers.Contract(
@@ -41,12 +42,10 @@ export const getVotos = async () => {
 };
 
 export const votar = async (idCandidato: number) => {
-  try {
+  console.log("Va a votar en contract");
     const contract = getEleccionesContract();
-    const tx = await contract.votar(idCandidato);
-    return await tx.wait();
-  } catch (error) {
-    console.error('Error al votar:', error);
-    throw error;
-  }
+    console.log("Va a votar en contract");
+    //const tx = await contract.votar(idCandidato);
+    return await contract.votar(idCandidato);
+
 };

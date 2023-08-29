@@ -16,12 +16,12 @@ contract Elecciones {
     }
 
     function votar(uint256 _idCandidato) public {
-        require(_idCandidato < totalCandidatos, "Candidato no existe");
+        require(_idCandidato < totalCandidatos, "Candidato no existe, favor ingresarlo previo a votar.");
         candidatos[_idCandidato].votos += 1;
     }
 
     function getNombre(uint256 _idCandidato) public view returns (string memory) {
-        require(_idCandidato < totalCandidatos, "Candidato no existe");
+        require(_idCandidato < totalCandidatos, "Candidato no existe, favor ingresarlo previo a votar.");
         return candidatos[_idCandidato].nombre;
     }
 
