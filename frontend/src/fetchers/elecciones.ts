@@ -7,6 +7,12 @@ export const getCandidatos = async () =>
     response.json()
   );
 
+// Función para obtener la lista de candidatos con votos
+export const getCandidatosConVotos = async () =>
+  await fetch('http://localhost:20001/elecciones/candidatosConVotos', { method: 'GET', headers }).then((response) =>
+    response.json()
+  );
+
 // Función para agregar un nuevo candidato
 export const agregarCandidato = async (nombre: string) =>
   await fetch(`http://localhost:20001/elecciones/agregarCandidato/?nombre=${nombre}`, {

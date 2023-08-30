@@ -1,5 +1,7 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
+import JSONbig from 'json-bigint';
+
 
 
 import express, { Express, Request, Response } from 'express';
@@ -45,43 +47,30 @@ app.post('/elecciones/agregarCandidato', async (req: Request, res: Response) => 
   }
 });
 
-app.post('/elecciones/votarPorCandidato', async (req: Request, res: Response) => {
-  try {
+// Endpoints para Elecciones
 
 
-   
-      const contract = getEleccionesContract(); // Asegúrate de que tienes una función llamada getEleccionesContract
-      const idCandidatoString = req.query.idCandidato;
 
-      if (typeof idCandidatoString !== 'string') {
-          console.log("El ID del candidato no se proporcionó correctamente.");
-          return;
-      }
-      
-      const idCandidatoNumber = parseInt(idCandidatoString, 10); 
-      
-      if (isNaN(idCandidatoNumber)) {
-          console.error("El ID del candidato no es un número válido.");
-          res.status(400).send("ID del candidato no válido");
-          return;
-      }
-      try{
-        console.log("Va a votar en backend: "+idCandidatoNumber);
-        console.log("ID del candidato como cadena:", idCandidatoString);
-        console.log("ID del candidato como número:", idCandidatoNumber);
-        
-      await contract.votar(Number(6));
-      }catch(error){
-        console.log("Error al votar");
+app.get('/elecciones/candidatosConVotos', async (req: Request, res: Response) => {
+  const contract = getEleccionesContract();
+  const totalCandidatosBN = await contract.totalCandidatos();
+  const totalCandidatos = totalCandidatosBN;
+  const candidatosList = [];
 
-      }
-      console.log("ya votó");
-      res.status(200).send('Voto registrado con éxito');
-  } catch (error) {
-      console.error('Error al votar:', error);
-      res.status(500).send('Hubo un error al procesar el voto.');
+  for (let i = 0; i < totalCandidatos; i++) {
+    const nombre = await contract.getNombre(i);
+    const votos = await contract.getVotos(i);
+
+    candidatosList.push({ 
+      id: i,
+      nombre, 
+      votos: votos.toString()  // Convertir BigInt a string
+    });
   }
+
+  res.send(JSONbig.stringify(candidatosList));
 });
+
 
 
 
